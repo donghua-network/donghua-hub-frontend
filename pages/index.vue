@@ -1,63 +1,66 @@
 <template>
-  <div class="container">
-    <div>
-      <Logo />
-      <h1 class="title">donghua-hub-frontend</h1>
-      <div class="links">
-        <a
-          href="https://nuxtjs.org/"
-          target="_blank"
-          rel="noopener noreferrer"
-          class="button--green"
-        >
-          Documentation
-        </a>
-        <a
-          href="https://github.com/nuxt/nuxt.js"
-          target="_blank"
-          rel="noopener noreferrer"
-          class="button--grey"
-        >
-          GitHub
-        </a>
+  <div class="content-container">
+    <div class="content-section">
+      <h2>Featured</h2>
+      <div class="card-container">
+        <donghua-card
+          v-for="donghua in featuredDonghuas"
+          :key="donghua.id"
+          :donghua="donghua"
+        ></donghua-card>
+      </div>
+    </div>
+    <div class="content-section">
+      <h2>Currently Airing</h2>
+      <div class="card-container">
+        <donghua-card
+          v-for="donghua in airingDonghuas"
+          :key="donghua.id"
+          :donghua="donghua"
+        ></donghua-card>
+      </div>
+    </div>
+    <div class="content-section">
+      <h2>Upcoming Releases</h2>
+      <div class="card-container">
+        <donghua-card
+          v-for="donghua in upcomingDonghuas"
+          :key="donghua.id"
+          :donghua="donghua"
+        ></donghua-card>
       </div>
     </div>
   </div>
 </template>
 
 <script>
-export default {}
+export default {
+  async asyncData({ $axios }) {
+    const airingDonghuas = await $axios.get('/donghuas?isAiring=true')
+    const upcomingDonghuas = await $axios.get(
+      '/donghuas?_where[0][isAiring]=false&_where[1][startDate_gt]=' +
+        new Date().toISOString()
+    )
+    const featuredDonghuas = await $axios.get('/donghuas?isFeatured=true')
+    return {
+      airingDonghuas: airingDonghuas.data,
+      upcomingDonghuas: upcomingDonghuas.data,
+      featuredDonghuas: featuredDonghuas.data,
+    }
+  },
+}
 </script>
 
-<style>
-.container {
-  margin: 0 auto;
-  min-height: 100vh;
+<style scoped>
+.content-section {
+  margin-bottom: 50px;
+}
+.content-container {
+  text-align: center;
+  padding: 20px;
+}
+.card-container {
   display: flex;
   justify-content: center;
-  align-items: center;
-  text-align: center;
-}
-
-.title {
-  font-family: 'Quicksand', 'Source Sans Pro', -apple-system, BlinkMacSystemFont,
-    'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
-  display: block;
-  font-weight: 300;
-  font-size: 100px;
-  color: #35495e;
-  letter-spacing: 1px;
-}
-
-.subtitle {
-  font-weight: 300;
-  font-size: 42px;
-  color: #526488;
-  word-spacing: 5px;
-  padding-bottom: 15px;
-}
-
-.links {
-  padding-top: 15px;
 }
 </style>
