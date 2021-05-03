@@ -1,0 +1,7 @@
+.dockerignore
+.gitignore
+docker-compose.yml
+node_modules
+npm-debug*
+.nuxt
+.git

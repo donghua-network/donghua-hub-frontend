@@ -4,3 +4,13 @@ services:
     image: donghuanetwork/donghua-hub-strapi-backend:dev
     ports:
       - '1337:1337'
+  frontend:
+    build: .
+    ports:
+      - '3000:3000'
+    links:
+      - backend
+    volumes:
+      - .:/app
+    depends_on:
+      - backend
