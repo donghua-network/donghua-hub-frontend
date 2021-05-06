@@ -37,7 +37,7 @@ export default {
   async asyncData({ $axios, params }) {
     const donghuaId = params.donghua
     const donghua = await $axios.post('/graphql', {
-      query: `donghua{
+      query: `{
                  donghua(id:${donghuaId}){
                   title,
                  },
