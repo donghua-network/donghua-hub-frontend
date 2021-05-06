@@ -49,6 +49,9 @@ export default {
                   tags{
                    name,
                   }
+                  image{
+                   url,
+                  }
                  },
               }`,
     })
