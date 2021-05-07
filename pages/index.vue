@@ -36,16 +36,38 @@
 <script>
 export default {
   async asyncData({ $axios }) {
-    const airingDonghuas = await $axios.get('/donghuas?isAiring=true')
-    const upcomingDonghuas = await $axios.get(
-      '/donghuas?_where[0][isAiring]=false&_where[1][startDate_gt]=' +
-        new Date().toISOString()
-    )
-    const featuredDonghuas = await $axios.get('/donghuas?isFeatured=true')
+    const airingDonghuas = await $axios.post('/graphql', {
+      query: `{
+                donghuas(where: { isAiring: true })  {
+                  id,
+                  title,
+                  image{url},
+                },
+              }`,
+    })
+    const today = new Date().toISOString()
+    const upcomingDonghuas = await $axios.post('/graphql', {
+      query: `{
+                donghuas(where: { isAiring: false, startDate_gt: "${today}"})  {
+                  id,
+                  title,
+                  image{url},
+                },
+              }`,
+    })
+    const featuredDonghuas = await $axios.post('/graphql', {
+      query: `{
+                donghuas(where: { isFeatured: true })  {
+                  id,
+                  title,
+                  image{url},
+                },
+              }`,
+    })
     return {
-      airingDonghuas: airingDonghuas.data,
-      upcomingDonghuas: upcomingDonghuas.data,
-      featuredDonghuas: featuredDonghuas.data,
+      airingDonghuas: airingDonghuas.data.data.donghuas,
+      upcomingDonghuas: upcomingDonghuas.data.data.donghuas,
+      featuredDonghuas: featuredDonghuas.data.data.donghuas,
     }
   },
 }

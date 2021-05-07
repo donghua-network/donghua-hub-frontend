@@ -12,12 +12,14 @@
             <div>
               Genres:
               <a-tag v-for="genre in donghua.genres" :key="genre">{{
-                genre
+                genre.name
               }}</a-tag>
             </div>
             <div>
               Tags:
-              <a-tag v-for="tag in donghua.tags" :key="tag">{{ tag }}</a-tag>
+              <a-tag v-for="tag in donghua.tags" :key="tag">{{
+                tag.name
+              }}</a-tag>
             </div>
           </div>
         </a-col>
@@ -36,9 +38,25 @@
 export default {
   async asyncData({ $axios, params }) {
     const donghuaId = params.donghua
-    const donghua = await $axios.get('/donghuas/' + donghuaId)
+    const donghua = await $axios.post('/graphql', {
+      query: `{
+                 donghua(id:${donghuaId}){
+                  title,
+                  description,
+                  genres{
+                   name,
+                  },
+                  tags{
+                   name,
+                  }
+                  image{
+                   url,
+                  }
+                 },
+              }`,
+    })
     return {
-      donghua: donghua.data,
+      donghua: donghua.data.data.donghua,
     }
   },
 
