@@ -40,7 +40,7 @@ export default {
       query: `{
                 donghuas(where: { isAiring: true })  {
                   id,
-                  title,
+                  titles,
                   image{url},
                 },
               }`,
@@ -50,7 +50,7 @@ export default {
       query: `{
                 donghuas(where: { isAiring: false, startDate_gt: "${today}"})  {
                   id,
-                  title,
+                  titles,
                   image{url},
                 },
               }`,
@@ -59,7 +59,7 @@ export default {
       query: `{
                 donghuas(where: { isFeatured: true })  {
                   id,
-                  title,
+                  titles,
                   image{url},
                 },
               }`,

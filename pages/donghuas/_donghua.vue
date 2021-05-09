@@ -7,7 +7,7 @@
         /></a-col>
         <a-col :xs="{ span: 24 }" :md="{ span: 16 }" :lg="{ span: 18 }">
           <div>
-            <h2>{{ donghua.title }}</h2>
+            <h2>{{ donghua.titles.romanized }}</h2>
             <div>{{ donghua.description }}</div>
             <div>
               Genres:
@@ -41,7 +41,7 @@ export default {
     const donghua = await $axios.post('/graphql', {
       query: `{
                  donghua(id:${donghuaId}){
-                  title,
+                  titles,
                   description,
                   genres{
                    name,
@@ -62,7 +62,7 @@ export default {
 
   head() {
     return {
-      title: this.donghua.title,
+      title: this.donghua.titles.romanized,
     }
   },
 }
