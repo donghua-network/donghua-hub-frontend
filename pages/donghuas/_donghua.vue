@@ -10,16 +10,30 @@
             <h2>{{ donghua.title }}</h2>
             <div>{{ donghua.description }}</div>
             <div>
-              Genres:
+              <h3>Genres:</h3>
               <a-tag v-for="genre in donghua.genres" :key="genre">{{
                 genre.name
               }}</a-tag>
             </div>
             <div>
-              Tags:
+              <h3>Tags:</h3>
               <a-tag v-for="tag in donghua.tags" :key="tag">{{
                 tag.name
               }}</a-tag>
+            </div>
+            <div>
+              <h3>Popularity:</h3>
+              <p v-for="popularity in donghua.popularity" :key="popularity">
+                {{ popularity.platform }}:
+                <a-tag>{{ popularity.numUsers }}</a-tag>
+              </p>
+            </div>
+            <div>
+              <h3>Score:</h3>
+              <p v-for="score in donghua.score" :key="score">
+                {{ score.platform }}:
+                <a-tag>{{ score.score }}</a-tag>
+              </p>
             </div>
           </div>
         </a-col>
@@ -27,7 +41,9 @@
       <a-tabs default-active-key="1">
         <a-tab-pane key="1" tab="Media"></a-tab-pane>
         <a-tab-pane key="2" tab="Related Works"></a-tab-pane>
-        <a-tab-pane key="3" tab="Staff"></a-tab-pane>
+        <a-tab-pane key="3" tab="Staff">
+          <h4 v-for="staff in staffs" :key="staff">{{ staff.name }}</h4>
+        </a-tab-pane>
       </a-tabs>
       <Disqus />
     </div>
@@ -48,15 +64,25 @@ export default {
                   },
                   tags{
                    name,
-                  }
+                  },
                   image{
                    url,
-                  }
+                  },
+                  popularity,
+                  score
                  },
+              }`,
+    })
+    const staffs = await $axios.post('/graphql', {
+      query: `{
+                staffRoles(where:{donghua:{id:${donghuaId}}}){
+                  name
+                },
               }`,
     })
     return {
       donghua: donghua.data.data.donghua,
+      staffs: staffs.data.data.staffRoles,
     }
   },
 
