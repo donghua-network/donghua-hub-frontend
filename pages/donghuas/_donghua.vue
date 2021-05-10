@@ -42,7 +42,7 @@
         <a-tab-pane key="1" tab="Media"></a-tab-pane>
         <a-tab-pane key="2" tab="Related Works"></a-tab-pane>
         <a-tab-pane key="3" tab="Staff">
-          <h4 v-for="staff in staffs" :key="staff">{{ staff.name }}</h4>
+          <a-table :columns="columns" :data-source="data" bordered></a-table>
         </a-tab-pane>
       </a-tabs>
       <Disqus />
@@ -51,6 +51,18 @@
 </template>
 
 <script>
+const columns = [
+  {
+    title: 'Role',
+    dataIndex: 'name',
+    key: 'name',
+  },
+  {
+    title: 'Person Name',
+    dataIndex: 'person.name',
+    key: 'person.name',
+  },
+]
 export default {
   async asyncData({ $axios, params }) {
     const donghuaId = params.donghua
@@ -73,19 +85,26 @@ export default {
                  },
               }`,
     })
-    const staffs = await $axios.post('/graphql', {
+    const staffRoles = await $axios.post('/graphql', {
       query: `{
                 staffRoles(where:{donghua:{id:${donghuaId}}}){
-                  name
+                  name,
+                  person{name}
                 },
               }`,
     })
     return {
       donghua: donghua.data.data.donghua,
-      staffs: staffs.data.data.staffRoles,
+      staffRoles: staffRoles.data.data.staffRoles,
+      data: staffRoles.data.data.staffRoles,
     }
   },
-
+  data() {
+    return {
+      data: [],
+      columns,
+    }
+  },
   head() {
     return {
       title: this.donghua.title,
