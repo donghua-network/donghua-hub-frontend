@@ -42,7 +42,11 @@
         <a-tab-pane key="1" tab="Media"></a-tab-pane>
         <a-tab-pane key="2" tab="Related Works"></a-tab-pane>
         <a-tab-pane key="3" tab="Staff">
-          <a-table :columns="columns" :data-source="data" bordered></a-table>
+          <a-table
+            :columns="staffTableColumns"
+            :data-source="staffTableData"
+            bordered
+          ></a-table>
         </a-tab-pane>
       </a-tabs>
       <Disqus />
@@ -51,14 +55,14 @@
 </template>
 
 <script>
-const columns = [
+const staffTableColumns = [
   {
     title: 'Role',
     dataIndex: 'name',
     key: 'name',
   },
   {
-    title: 'Person Name',
+    title: 'Name',
     dataIndex: 'person.name',
     key: 'person.name',
   },
@@ -95,14 +99,13 @@ export default {
     })
     return {
       donghua: donghua.data.data.donghua,
-      staffRoles: staffRoles.data.data.staffRoles,
-      data: staffRoles.data.data.staffRoles,
+      staffTableData: staffRoles.data.data.staffRoles,
     }
   },
   data() {
     return {
-      data: [],
-      columns,
+      staffTableData: [],
+      staffTableColumns,
     }
   },
   head() {
