@@ -10,16 +10,30 @@
             <h2>{{ donghua.titles.romanized }}</h2>
             <div>{{ donghua.description }}</div>
             <div>
-              Genres:
+              <h3>Genres:</h3>
               <a-tag v-for="genre in donghua.genres" :key="genre">{{
                 genre.name
               }}</a-tag>
             </div>
             <div>
-              Tags:
+              <h3>Tags:</h3>
               <a-tag v-for="tag in donghua.tags" :key="tag">{{
                 tag.name
               }}</a-tag>
+            </div>
+            <div>
+              <h3>Popularity:</h3>
+              <p v-for="popularity in donghua.popularity" :key="popularity">
+                {{ popularity.platform }}:
+                <a-tag>{{ popularity.numUsers }}</a-tag>
+              </p>
+            </div>
+            <div>
+              <h3>Score:</h3>
+              <p v-for="score in donghua.score" :key="score">
+                {{ score.platform }}:
+                <a-tag>{{ score.score }}</a-tag>
+              </p>
             </div>
           </div>
         </a-col>
@@ -27,7 +41,13 @@
       <a-tabs default-active-key="1">
         <a-tab-pane key="1" tab="Media"></a-tab-pane>
         <a-tab-pane key="2" tab="Related Works"></a-tab-pane>
-        <a-tab-pane key="3" tab="Staff"></a-tab-pane>
+        <a-tab-pane key="3" tab="Staff">
+          <a-table
+            :columns="staffTableColumns"
+            :data-source="staffTableData"
+            bordered
+          ></a-table>
+        </a-tab-pane>
       </a-tabs>
       <Disqus />
     </div>
@@ -35,6 +55,18 @@
 </template>
 
 <script>
+const staffTableColumns = [
+  {
+    title: 'Role',
+    dataIndex: 'name',
+    key: 'name',
+  },
+  {
+    title: 'Name',
+    dataIndex: 'person.name',
+    key: 'person.name',
+  },
+]
 export default {
   async asyncData({ $axios, params }) {
     const donghuaId = params.donghua
@@ -48,18 +80,34 @@ export default {
                   },
                   tags{
                    name,
-                  }
+                  },
                   image{
                    url,
-                  }
+                  },
+                  popularity,
+                  score
                  },
+              }`,
+    })
+    const staffRoles = await $axios.post('/graphql', {
+      query: `{
+                staffRoles(where:{donghua:{id:${donghuaId}}}){
+                  name,
+                  person{name}
+                },
               }`,
     })
     return {
       donghua: donghua.data.data.donghua,
+      staffTableData: staffRoles.data.data.staffRoles,
     }
   },
-
+  data() {
+    return {
+      staffTableData: [],
+      staffTableColumns,
+    }
+  },
   head() {
     return {
       title: this.donghua.titles.romanized,
