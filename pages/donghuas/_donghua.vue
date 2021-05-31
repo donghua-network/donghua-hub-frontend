@@ -3,7 +3,7 @@
     <div class="page-details-container">
       <a-row gutter="24">
         <a-col :xs="{ span: 24 }" :md="{ span: 8 }" :lg="{ span: 6 }"
-          ><img class="page-image" :src="donghua.image"
+          ><img class="page-image" :src="donghua.image.url"
         /></a-col>
         <a-col :xs="{ span: 24 }" :md="{ span: 16 }" :lg="{ span: 18 }">
           <div>
