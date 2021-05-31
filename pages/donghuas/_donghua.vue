@@ -23,16 +23,19 @@
             </div>
             <div>
               <h3>Popularity:</h3>
-              <p v-for="popularity in donghua.popularity" :key="popularity">
-                {{ popularity.platform }}:
-                <a-tag>{{ popularity.numUsers }}</a-tag>
+              <p
+                v-for="popularity in Object.entries(donghua.popularity)"
+                :key="popularity[0]"
+              >
+                {{ popularity[0] }}:
+                <a-tag>{{ popularity[1] }}</a-tag>
               </p>
             </div>
             <div>
               <h3>Score:</h3>
-              <p v-for="score in donghua.score" :key="score">
-                {{ score.platform }}:
-                <a-tag>{{ score.score }}</a-tag>
+              <p v-for="score in Object.entries(donghua.score)" :key="score[0]">
+                {{ score[0] }}:
+                <a-tag>{{ score[1] }}</a-tag>
               </p>
             </div>
           </div>
