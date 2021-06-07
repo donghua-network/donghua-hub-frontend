@@ -38,7 +38,7 @@ export default {
   async asyncData({ $axios }) {
     const airingDonghuas = await $axios.post('/graphql', {
       query: `{
-                donghuas(where: { status: {name: "RELEASING"} })  {
+                donghuas(limit: 10, where: { status: {name: "RELEASING"} })  {
                   id,
                   titles,
                   image{url},
@@ -47,7 +47,7 @@ export default {
     })
     const upcomingDonghuas = await $axios.post('/graphql', {
       query: `{
-                donghuas(where: { status: {name: "NOT_YET_RELEASED"}})  {
+                donghuas(limit: 10, where: { status: {name: "NOT_YET_RELEASED"}})  {
                   id,
                   titles,
                   image{url},
@@ -56,7 +56,7 @@ export default {
     })
     const featuredDonghuas = await $axios.post('/graphql', {
       query: `{
-                donghuas(where: { isFeatured: true })  {
+                donghuas(limit: 10, where: { isFeatured: true })  {
                   id,
                   titles,
                   image{url},
