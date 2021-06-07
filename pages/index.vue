@@ -38,17 +38,16 @@ export default {
   async asyncData({ $axios }) {
     const airingDonghuas = await $axios.post('/graphql', {
       query: `{
-                donghuas(where: { isAiring: true })  {
+                donghuas(where: { status: {name: "RELEASING"} })  {
                   id,
                   titles,
                   image{url},
                 },
               }`,
     })
-    const today = new Date().toISOString()
     const upcomingDonghuas = await $axios.post('/graphql', {
       query: `{
-                donghuas(where: { isAiring: false, startDate_gt: "${today}"})  {
+                donghuas(where: { status: {name: "NOT_YET_RELEASED"}})  {
                   id,
                   titles,
                   image{url},
