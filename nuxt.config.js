@@ -17,8 +17,6 @@ const dynamicRoutes = async () => {
 export default {
   // Target (https://go.nuxtjs.dev/config-target)
   target: 'static',
-  
-  ssr: false,
 
   // Global page headers (https://go.nuxtjs.dev/config-head)
   head: {
@@ -55,7 +53,7 @@ export default {
   // Axios module configuration (https://go.nuxtjs.dev/config-axios)
   axios: {},
 
-  publicRuntimeConfig: {
+  privateRuntimeConfig: {
     axios: {
       browserBaseURL: process.env.API_SERVER_URL,
       baseURL: process.env.API_SERVER_URL,
