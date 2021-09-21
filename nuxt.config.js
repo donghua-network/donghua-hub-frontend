@@ -53,7 +53,7 @@ export default {
   // Axios module configuration (https://go.nuxtjs.dev/config-axios)
   axios: {},
 
-  privateRuntimeConfig: {
+  publicRuntimeConfig: {
     axios: {
       browserBaseURL: process.env.API_SERVER_URL,
       baseURL: process.env.API_SERVER_URL,
