@@ -18,4 +18,7 @@ html {
   -webkit-font-smoothing: antialiased;
   box-sizing: border-box;
 }
+body {
+  background-color: #f9f9f9;
+}
 </style>
