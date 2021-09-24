@@ -42,7 +42,33 @@
         </a-col>
       </a-row>
       <a-tabs default-active-key="1">
-        <a-tab-pane key="1" tab="Media"></a-tab-pane>
+        <a-tab-pane key="1" tab="Media">
+          <h3>Trailers</h3>
+          <div>
+            <div v-for="trailer in donghua.trailers" :key="trailer">
+              <iframe
+                v-if="trailer.youtube"
+                width="560"
+                height="315"
+                :src="'https://www.youtube.com/embed/' + trailer.youtube"
+                title="YouTube video player"
+                frameborder="0"
+                allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                allowfullscreen
+              ></iframe>
+            </div>
+          </div>
+          <br />
+          <h3>Streams</h3>
+          <div>
+            <p
+              v-for="stream in Object.entries(donghua.streams)"
+              :key="stream[0]"
+            >
+              <a :href="stream[1]">{{ stream[0] }}</a>
+            </p>
+          </div>
+        </a-tab-pane>
         <a-tab-pane key="2" tab="Related Works"></a-tab-pane>
         <a-tab-pane key="3" tab="Staff">
           <a-table
@@ -88,7 +114,9 @@ export default {
                    url,
                   },
                   popularity,
-                  score
+                  score,
+                  trailers,
+                  streams
                  },
               }`,
     })
