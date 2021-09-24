@@ -48,9 +48,29 @@
 <script>
 export default {
   async asyncData({ $axios }) {
+    const featuredDonghuas = await $axios.post('/graphql', {
+      query: `{
+                donghuas(sort:"totalPopularity:desc", where: { isFeatured: true })  {
+                  id,
+                  titles,
+                  image{url},
+                  status{name}
+                },
+              }`,
+    })
+
+    const featuredAiring = featuredDonghuas.data.data.donghuas.filter(
+      (donghua) => donghua.status.name === 'RELEASING'
+    )
+    const featuredUpcoming = featuredDonghuas.data.data.donghuas.filter(
+      (donghua) => donghua.status.name === 'NOT_YET_RELEASED'
+    )
+
     const airingDonghuas = await $axios.post('/graphql', {
       query: `{
-                donghuas(limit: 10, where: { status: {name: "RELEASING"} })  {
+                donghuas(limit: ${
+                  10 - featuredAiring.length
+                }, sort:"totalPopularity:desc", where: { status: {name: "RELEASING"} })  {
                   id,
                   titles,
                   image{url},
@@ -59,26 +79,26 @@ export default {
     })
     const upcomingDonghuas = await $axios.post('/graphql', {
       query: `{
-                donghuas(limit: 10, where: { status: {name: "NOT_YET_RELEASED"}})  {
+                donghuas(limit: ${
+                  10 - featuredUpcoming.length
+                }, sort:"totalPopularity:desc", where: { status: {name: "NOT_YET_RELEASED"}})  {
                   id,
                   titles,
                   image{url},
                 },
               }`,
     })
-    const featuredDonghuas = await $axios.post('/graphql', {
-      query: `{
-                donghuas(limit: 10, where: { isFeatured: true })  {
-                  id,
-                  titles,
-                  image{url},
-                },
-              }`,
-    })
+
     return {
-      airingDonghuas: airingDonghuas.data.data.donghuas,
-      upcomingDonghuas: upcomingDonghuas.data.data.donghuas,
-      featuredDonghuas: featuredDonghuas.data.data.donghuas,
+      airingDonghuas: featuredAiring.concat(airingDonghuas.data.data.donghuas),
+      upcomingDonghuas: featuredUpcoming.concat(
+        upcomingDonghuas.data.data.donghuas
+      ),
+      featuredDonghuas: featuredDonghuas.data.data.donghuas.filter(
+        (donghua) =>
+          donghua.status.name !== 'RELEASING' &&
+          donghua.status.name !== 'NOT_YET_RELEASED'
+      ),
     }
   },
 }
