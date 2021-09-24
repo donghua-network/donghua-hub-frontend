@@ -1,6 +1,6 @@
 version: '3.8'
 services:
   backend:
-    image: donghuanetwork/donghua-hub-strapi-backend:dev
+    image: donghuanetwork/donghua-hub-strapi-backend:dev@sha256:38fe811db5e504212e6f33380b525964e00b8dc5eae82a993aec906fe37b2641
     ports:
       - '1337:1337'
