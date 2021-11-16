@@ -110,7 +110,6 @@ export default {
 }
 .content-container {
   text-align: center;
-  padding: 20px;
 }
 .card-container {
   display: flex;

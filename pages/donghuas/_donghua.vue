@@ -147,11 +147,10 @@ export default {
 }
 </script>
 
-<style>
+<style scoped>
 .main-content {
   display: flex;
   justify-content: center;
-  padding: 50px;
 }
 .page-details-container {
   max-width: 1280px;

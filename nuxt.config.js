@@ -1,4 +1,7 @@
 import axios from 'axios'
+import fs from 'fs'
+import path from 'path'
+import { Index } from 'flexsearch'
 
 const dynamicRoutes = async () => {
   axios.defaults.baseURL = process.env.API_SERVER_URL
@@ -65,5 +68,49 @@ export default {
 
   generate: {
     routes: dynamicRoutes,
+  },
+
+  hooks: {
+    build: {
+      async before(builder) {
+        axios.defaults.baseURL = process.env.API_SERVER_URL
+        const donghuas = await axios.get('/donghuas')
+        const indexEn = new Index()
+        const indexRom = new Index()
+        const titleMap = {}
+        for (const donghua of donghuas.data) {
+          donghua.id = parseInt(donghua.id)
+          titleMap[donghua.id] = ['', '']
+          if (donghua.titles.en) {
+            indexEn.add(donghua.id, donghua.titles.en)
+            titleMap[donghua.id][0] = donghua.titles.en
+          }
+          if (donghua.titles.romanized) {
+            indexRom.add(donghua.id, donghua.titles.romanized)
+            titleMap[donghua.id][1] = donghua.titles.romanized
+          }
+        }
+        const staticDir = path.join(builder.nuxt.options.rootDir, 'static')
+        fs.writeFileSync(
+          staticDir + '/titleIndex.json',
+          JSON.stringify(titleMap)
+        )
+
+        // await indexEn.export((key, data) => {
+        //   return new Promise((resolve) => {
+        //     fs.writeFileSync(staticDir + '/searchIndexEn_key', key)
+        //     fs.writeFileSync(staticDir + '/searchIndexEn_data', data)
+        //     resolve()
+        //   })
+        // })
+        // await indexRom.export((key, data) => {
+        //   return new Promise((resolve) => {
+        //     fs.writeFileSync(staticDir + '/searchIndexRom_key', key)
+        //     fs.writeFileSync(staticDir + '/searchIndexRom_data', data)
+        //     resolve()
+        //   })
+        // })
+      },
+    },
   },
 }
