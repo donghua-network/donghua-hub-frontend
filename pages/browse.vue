@@ -176,8 +176,11 @@ export default {
       allDonghuas = allDonghuas.concat(
         await $axios
           .post('/graphql', {
-            query: `{
-                donghuas(sort:"totalPopularity:desc", start:$start)  {
+            query:
+              `{
+                donghuas(sort:"totalPopularity:desc", start:` +
+              allDonghuas.length +
+              `)  {
                   id,
                   titles,
                   image{url},
@@ -189,9 +192,6 @@ export default {
                   aggregateScore
                 },
               }`,
-            variables: {
-              start: allDonghuas.length,
-            },
           })
           .then((res) => res.data.data.donghuas)
       )

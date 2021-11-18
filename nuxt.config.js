@@ -5,7 +5,7 @@ import { Index } from 'flexsearch'
 
 const dynamicRoutes = async () => {
   axios.defaults.baseURL = process.env.API_SERVER_URL
-  const numDonghuas = await axios.get('/donghuas').then((res) => res.data)
+  const numDonghuas = await axios.get('/donghuas/count').then((res) => res.data)
   let donghuas = await axios.get('/donghuas').then((res) => res.data)
   while (donghuas.length < numDonghuas) {
     donghuas = donghuas.concat(
@@ -83,7 +83,9 @@ export default {
     build: {
       async before(builder) {
         axios.defaults.baseURL = process.env.API_SERVER_URL
-        const numDonghuas = await axios.get('/donghuas').then((res) => res.data)
+        const numDonghuas = await axios
+          .get('/donghuas/count')
+          .then((res) => res.data)
         let donghuas = await axios.get('/donghuas').then((res) => res.data)
         while (donghuas.length < numDonghuas) {
           donghuas = donghuas.concat(
