@@ -71,10 +71,10 @@ export default {
     searchResults() {
       if (this.searchQuery !== null && this.searchQuery !== '') {
         const uniqueIds = new Set(
-          this.searchIndices.en.search(this.searchQuery)
+          this.searchIndices.en.search(this.searchQuery, 10)
         )
         this.searchIndices.rom
-          .search(this.searchQuery)
+          .search(this.searchQuery, 10)
           .forEach((val) => uniqueIds.add(val))
         return Array.from(uniqueIds)
       }
