@@ -3,7 +3,7 @@
     <div>
       <a-form class="search-form" :colon="false">
         <a-row :gutter="5">
-          <a-col :md="8">
+          <a-col :md="4">
             <a-form-item label="Search" class="search-form-item">
               <a-input v-model="filters.query" @change="onSearch" />
             </a-form-item>
@@ -57,6 +57,18 @@
                 >
                   {{ format }}
                 </a-select-option>
+              </a-select>
+            </a-form-item>
+          </a-col>
+          <a-col :md="4">
+            <a-form-item label="Sort By" class="search-form-item">
+              <a-select default-value="popularity-desc" @change="sortChanged">
+                <a-select-option value="popularity-desc"
+                  >Most Popular</a-select-option
+                >
+                <a-select-option value="score-desc"
+                  >Highest Score</a-select-option
+                >
               </a-select>
             </a-form-item>
           </a-col>
@@ -176,6 +188,7 @@ export default {
         statuses: new Set(),
         query: '',
       },
+      sort: 'popularity-desc',
       pageNumber: 1,
       pageSize: 50,
     }
@@ -189,65 +202,79 @@ export default {
 
   computed: {
     displayedDonghuas() {
-      return this.donghuas.filter((donghua) => {
-        if (this.filters.query !== null && this.filters.query !== '') {
-          let matchesQuery = false
-          for (const title of Object.values(donghua.titles)) {
-            if (title.toLowerCase().includes(this.filters.query)) {
-              matchesQuery = true
-              break
+      return this.donghuas
+        .filter((donghua) => {
+          if (this.filters.query !== null && this.filters.query !== '') {
+            let matchesQuery = false
+            for (const title of Object.values(donghua.titles)) {
+              if (title.toLowerCase().includes(this.filters.query)) {
+                matchesQuery = true
+                break
+              }
+            }
+            if (!matchesQuery) {
+              return false
             }
           }
-          if (!matchesQuery) {
-            return false
-          }
-        }
 
-        if (this.filters.genres.size > 0) {
-          let hasGenre = false
-          for (const genre of donghua.genres) {
-            if (this.filters.genres.has(genre)) {
-              hasGenre = true
-              break
+          if (this.filters.genres.size > 0) {
+            let hasGenre = false
+            for (const genre of donghua.genres) {
+              if (this.filters.genres.has(genre)) {
+                hasGenre = true
+                break
+              }
+            }
+            if (!hasGenre) {
+              return false
             }
           }
-          if (!hasGenre) {
-            return false
-          }
-        }
 
-        if (this.filters.tags.size > 0) {
-          let hasTag = false
-          for (const tag of donghua.tags) {
-            if (this.filters.tags.has(tag)) {
-              hasTag = true
-              break
+          if (this.filters.tags.size > 0) {
+            let hasTag = false
+            for (const tag of donghua.tags) {
+              if (this.filters.tags.has(tag)) {
+                hasTag = true
+                break
+              }
+            }
+            if (!hasTag) {
+              return false
             }
           }
-          if (!hasTag) {
-            return false
-          }
-        }
 
-        if (this.filters.formats.size > 0) {
-          if (!this.filters.formats.has(donghua.media_type)) {
-            return false
+          if (this.filters.formats.size > 0) {
+            if (!this.filters.formats.has(donghua.media_type)) {
+              return false
+            }
           }
-        }
 
-        if (this.filters.statuses.size > 0) {
-          if (!this.filters.statuses.has(donghua.status)) {
-            return false
+          if (this.filters.statuses.size > 0) {
+            if (!this.filters.statuses.has(donghua.status)) {
+              return false
+            }
           }
-        }
-        return true
-      })
+          return true
+        })
+        .sort((a, b) => {
+          switch (this.sort) {
+            case 'popularity-desc':
+              return b.totalPopularity - a.totalPopularity
+            case 'score-desc':
+              return b.score - a.score
+          }
+        })
     },
   },
 
   methods: {
     onSearch() {
       this.pageNumber = 1
+    },
+
+    sortChanged(value) {
+      console.log(value)
+      this.sort = value
     },
 
     genresChanged(values) {
