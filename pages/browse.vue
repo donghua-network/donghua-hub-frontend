@@ -198,8 +198,12 @@ export default {
     }
     for (const donghua of allDonghuas) {
       donghua.id = parseInt(donghua.id)
-      donghua.status = parseInt(donghua.status.id)
-      donghua.media_type = parseInt(donghua.media_type.id)
+      if (donghua.status) {
+        donghua.status = parseInt(donghua.status.id)
+      }
+      if (donghua.media_type) {
+        donghua.media_type = parseInt(donghua.media_type.id)
+      }
       donghua.genres = donghua.genres.map((genre) => parseInt(genre.id))
       donghua.tags = donghua.tags.map((tag) => parseInt(tag.id))
     }
