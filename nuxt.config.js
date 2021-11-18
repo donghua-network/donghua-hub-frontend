@@ -5,8 +5,17 @@ import { Index } from 'flexsearch'
 
 const dynamicRoutes = async () => {
   axios.defaults.baseURL = process.env.API_SERVER_URL
-  const donghuas = await axios.get('/donghuas')
-  const donghuaRoutes = donghuas.data.map((donghua) => {
+  const numDonghuas = await axios.get('/donghuas').then((res) => res.data)
+  let donghuas = await axios.get('/donghuas').then((res) => res.data)
+  while (donghuas.length < numDonghuas) {
+    donghuas = donghuas.concat(
+      await axios
+        .get('/donghuas?_start=' + donghuas.length)
+        .then((res) => res.data)
+    )
+  }
+
+  const donghuaRoutes = donghuas.map((donghua) => {
     return {
       route: `/donghuas/${donghua.id}`,
       payload: donghua,
@@ -74,11 +83,19 @@ export default {
     build: {
       async before(builder) {
         axios.defaults.baseURL = process.env.API_SERVER_URL
-        const donghuas = await axios.get('/donghuas')
+        const numDonghuas = await axios.get('/donghuas').then((res) => res.data)
+        let donghuas = await axios.get('/donghuas').then((res) => res.data)
+        while (donghuas.length < numDonghuas) {
+          donghuas = donghuas.concat(
+            await axios
+              .get('/donghuas?_start=' + donghuas.length)
+              .then((res) => res.data)
+          )
+        }
         const indexEn = new Index()
         const indexRom = new Index()
         const titleMap = {}
-        for (const donghua of donghuas.data) {
+        for (const donghua of donghuas) {
           donghua.id = parseInt(donghua.id)
           titleMap[donghua.id] = ['', '']
           if (donghua.titles.en) {

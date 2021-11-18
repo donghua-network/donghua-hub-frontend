@@ -152,8 +152,12 @@ export default {
       (format) => (formats[format.id] = format.name)
     )
 
-    const allDonghuas = await $axios.post('/graphql', {
-      query: `{
+    const numDonghuas = await $axios
+      .get('/donghuas/count')
+      .then((res) => res.data)
+    let allDonghuas = await $axios
+      .post('/graphql', {
+        query: `{
                 donghuas(sort:"totalPopularity:desc")  {
                   id,
                   titles,
@@ -166,8 +170,33 @@ export default {
                   aggregateScore
                 },
               }`,
-    })
-    for (const donghua of allDonghuas.data.data.donghuas) {
+      })
+      .then((res) => res.data.data.donghuas)
+    while (allDonghuas.length < numDonghuas) {
+      allDonghuas = allDonghuas.concat(
+        await $axios
+          .post('/graphql', {
+            query: `{
+                donghuas(sort:"totalPopularity:desc", start:$start)  {
+                  id,
+                  titles,
+                  image{url},
+                  status{id},
+                  tags{id},
+                  genres{id},
+                  media_type{id},
+                  totalPopularity,
+                  aggregateScore
+                },
+              }`,
+            variables: {
+              start: allDonghuas.length,
+            },
+          })
+          .then((res) => res.data.data.donghuas)
+      )
+    }
+    for (const donghua of allDonghuas) {
       donghua.id = parseInt(donghua.id)
       donghua.status = parseInt(donghua.status.id)
       donghua.media_type = parseInt(donghua.media_type.id)
@@ -180,7 +209,7 @@ export default {
       tags,
       statuses,
       formats,
-      donghuas: allDonghuas.data.data.donghuas,
+      donghuas: allDonghuas,
       filters: {
         genres: new Set(),
         tags: new Set(),
@@ -191,12 +220,6 @@ export default {
       sort: 'popularity-desc',
       pageNumber: 1,
       pageSize: 50,
-    }
-  },
-
-  mounted() {
-    if (this.$route.query.q) {
-      this.filters.query = this.$route.query.q
     }
   },
 
@@ -261,10 +284,16 @@ export default {
             case 'popularity-desc':
               return b.totalPopularity - a.totalPopularity
             case 'score-desc':
-              return b.score - a.score
+              return b.aggregateScore - a.aggregateScore
           }
         })
     },
+  },
+
+  mounted() {
+    if (this.$route.query.q) {
+      this.filters.query = this.$route.query.q
+    }
   },
 
   methods: {
@@ -273,7 +302,6 @@ export default {
     },
 
     sortChanged(value) {
-      console.log(value)
       this.sort = value
     },
 
