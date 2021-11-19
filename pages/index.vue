@@ -3,6 +3,7 @@
     <div class="content-section">
       <h2>Short Film of the Month: False Memory</h2>
       <iframe
+        id="youtube-embed"
         width="560"
         height="315"
         src="https://www.youtube.com/embed/WPabB9vv_ks"
@@ -105,6 +106,9 @@ export default {
 </script>
 
 <style scoped>
+#youtube-embed {
+  max-width: 100%;
+}
 .content-section {
   margin-bottom: 50px;
 }
