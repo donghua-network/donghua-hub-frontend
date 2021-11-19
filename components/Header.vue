@@ -4,7 +4,7 @@
       <a-col :md="6" :lg="5" :xxl="4">
         <NuxtLink to="/"><img src="~/assets/banner_logo.png" /></NuxtLink>
       </a-col>
-      <a-col :md="18" :lg="19" :xxl="20">
+      <a-col :md="14" :lg="16" :xxl="18">
         <NuxtLink to="/browse"
           ><a-button type="link">Browse</a-button></NuxtLink
         >
@@ -29,6 +29,22 @@
               </NuxtLink>
             </div>
           </div>
+        </div>
+      </a-col>
+      <a-col :md="4" :lg="3" :xxl="2">
+        <div class="links-container">
+          <a-button type="link"
+            ><a href="https://discord.gg/ygUXFTQ">Discord</a></a-button
+          >
+          <a
+            class="github-link"
+            href="https://github.com/donghua-network/donghua-hub-frontend"
+            ><a-icon
+              type="github"
+              :style="{
+                fontSize: '20px',
+              }"
+          /></a>
         </div>
       </a-col>
     </a-row>
@@ -95,6 +111,18 @@ export default {
 }
 </script>
 <style scoped>
+.links-container {
+  display: flex;
+  align-items: center;
+  justify-content: right;
+}
+.github-link {
+  margin-left: 10px;
+  color: black;
+}
+.github-link:hover {
+  color: #40a9ff;
+}
 .search-container {
   display: inline;
 }
@@ -106,7 +134,7 @@ export default {
 }
 #menu-bar {
   background-color: white;
-  padding: 20px 20px 20px 40px;
+  padding: 20px 40px 20px 40px;
   box-shadow: 0 2px 8px #f0f1f2;
 }
 </style>
