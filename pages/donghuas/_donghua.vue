@@ -1,7 +1,7 @@
 <template>
   <div class="main-content">
     <div class="page-details-container">
-      <a-row gutter="24">
+      <a-row :gutter="24">
         <a-col :xs="{ span: 24 }" :md="{ span: 8 }" :lg="{ span: 6 }"
           ><img class="page-image" :src="donghua.image.url"
         /></a-col>
@@ -9,34 +9,60 @@
           <div>
             <h2>{{ donghua.titles.romanized }}</h2>
             <div>{{ donghua.description }}</div>
+            <br />
             <div>
-              <h3>Genres:</h3>
+              <b>External Links:</b>
+              <a
+                v-if="donghua.externalSiteIds.anilist"
+                :href="
+                  'https://anilist.co/anime/' + donghua.externalSiteIds.anilist
+                "
+                >AniList</a
+              >
+            </div>
+            <div>
+              <b>Genres:</b>
               <a-tag v-for="genre in donghua.genres" :key="genre">{{
                 genre.name
               }}</a-tag>
             </div>
             <div>
-              <h3>Tags:</h3>
+              <b>Tags:</b>
               <a-tag v-for="tag in donghua.tags" :key="tag">{{
                 tag.name
               }}</a-tag>
             </div>
             <div>
-              <h3>Popularity:</h3>
-              <p
+              <b>Popularity:</b>
+              <span
                 v-for="popularity in Object.entries(donghua.popularity)"
                 :key="popularity[0]"
               >
                 {{ popularity[0] }}:
                 <a-tag>{{ popularity[1] }}</a-tag>
-              </p>
+              </span>
             </div>
             <div>
-              <h3>Score:</h3>
-              <p v-for="score in Object.entries(donghua.score)" :key="score[0]">
+              <b>Score:</b>
+              <span
+                v-for="score in Object.entries(donghua.score)"
+                :key="score[0]"
+              >
                 {{ score[0] }}:
                 <a-tag>{{ score[1] }}</a-tag>
-              </p>
+              </span>
+            </div>
+            <div>
+              <b>Studios:</b>
+              {{ donghua.studios.map((studio) => studio.name).join(', ') }}
+            </div>
+            <div>
+              <b>Titles:</b>
+              {{
+                Object.values(donghua.titles)
+                  .concat(donghua.alternativeTitles)
+                  .join(', ')
+              }}
             </div>
           </div>
         </a-col>
@@ -50,6 +76,7 @@
                 v-if="trailer.youtube"
                 width="560"
                 height="315"
+                style="max-width: 100%"
                 :src="'https://www.youtube.com/embed/' + trailer.youtube"
                 title="YouTube video player"
                 frameborder="0"
@@ -99,8 +126,9 @@ const staffTableColumns = [
 export default {
   async asyncData({ $axios, params }) {
     const donghuaId = params.donghua
-    const donghua = await $axios.post('/graphql', {
-      query: `{
+    const donghua = await $axios
+      .post('/graphql', {
+        query: `{
                  donghua(id:${donghuaId}){
                   titles,
                   description,
@@ -116,21 +144,27 @@ export default {
                   popularity,
                   score,
                   trailers,
-                  streams
+                  streams,
+                  externalSiteIds,
+                  alternativeTitles,
+                  studios{id,name}
                  },
               }`,
-    })
-    const staffRoles = await $axios.post('/graphql', {
-      query: `{
+      })
+      .then((res) => res.data.data.donghua)
+    const staffTableData = await $axios
+      .post('/graphql', {
+        query: `{
                 staffRoles(where:{donghua:{id:${donghuaId}}}){
                   name,
                   person{name}
                 },
               }`,
-    })
+      })
+      .then((res) => res.data.data.staffRoles)
     return {
-      donghua: donghua.data.data.donghua,
-      staffTableData: staffRoles.data.data.staffRoles,
+      donghua,
+      staffTableData,
     }
   },
   data() {
