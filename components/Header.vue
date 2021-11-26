@@ -19,12 +19,17 @@
             v-show="searchResults.length > 0"
             class="search-results-container"
           >
-            <div v-for="result in searchResults" :key="result">
+            <div v-for="result in searchResults[0]" :key="result">
               <NuxtLink :to="'/donghuas/' + result">
                 <a-button type="link" @click="clearSearch">{{
-                  titlesMap[result][1] !== ''
-                    ? titlesMap[result][1]
-                    : titlesMap[result][0]
+                  titlesMap[result][0]
+                }}</a-button>
+              </NuxtLink>
+            </div>
+            <div v-for="result in searchResults[1]" :key="result">
+              <NuxtLink :to="'/donghuas/' + result">
+                <a-button type="link" @click="clearSearch">{{
+                  titlesMap[result][1]
                 }}</a-button>
               </NuxtLink>
             </div>
@@ -86,15 +91,13 @@ export default {
     },
     searchResults() {
       if (this.searchQuery !== null && this.searchQuery !== '') {
-        const uniqueIds = new Set(
-          this.searchIndices.en.search(this.searchQuery, 10)
-        )
-        this.searchIndices.rom
+        const enResults = this.searchIndices.en.search(this.searchQuery, 10)
+        const romResults = this.searchIndices.rom
           .search(this.searchQuery, 10)
-          .forEach((val) => uniqueIds.add(val))
-        return Array.from(uniqueIds)
+          .filter((id) => !enResults.includes(id))
+        return [enResults, romResults]
       }
-      return []
+      return [[], []]
     },
   },
 
@@ -131,6 +134,7 @@ export default {
   left: 81px;
   background-color: white;
   border: 1px solid lightgray;
+  z-index: 1000;
 }
 #menu-bar {
   background-color: white;

@@ -86,7 +86,7 @@
             </div>
           </div>
           <br />
-          <h3>Streams</h3>
+          <h3>Official Links/Streams</h3>
           <div>
             <p
               v-for="stream in Object.entries(donghua.streams)"

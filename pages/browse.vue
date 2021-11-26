@@ -234,7 +234,7 @@ export default {
           if (this.filters.query !== null && this.filters.query !== '') {
             let matchesQuery = false
             for (const title of Object.values(donghua.titles)) {
-              if (title.toLowerCase().includes(this.filters.query)) {
+              if (title && title.toLowerCase().includes(this.filters.query)) {
                 matchesQuery = true
                 break
               }
