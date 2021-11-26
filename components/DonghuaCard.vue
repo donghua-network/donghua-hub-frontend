@@ -1,7 +1,7 @@
 <template>
   <NuxtLink :to="'/donghuas/' + donghua.id">
     <a-card hoverable class="donghua-card">
-      <img slot="cover" :src="donghua.image.url" />
+      <img slot="cover" :src="donghua.imageUrl" />
       <a-card-meta
         :title="
           donghua.titles.en ? donghua.titles.en : donghua.titles.romanized

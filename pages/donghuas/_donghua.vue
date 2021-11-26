@@ -3,7 +3,7 @@
     <div class="page-details-container">
       <a-row :gutter="24">
         <a-col :xs="{ span: 24 }" :md="{ span: 8 }" :lg="{ span: 6 }"
-          ><img class="page-image" :src="donghua.image.url"
+          ><img class="page-image" :src="donghua.imageUrl"
         /></a-col>
         <a-col :xs="{ span: 24 }" :md="{ span: 16 }" :lg="{ span: 18 }">
           <div>
@@ -138,9 +138,7 @@ export default {
                   tags{
                    name,
                   },
-                  image{
-                   url,
-                  },
+                  imageUrl,
                   popularity,
                   score,
                   trailers,

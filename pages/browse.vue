@@ -161,7 +161,7 @@ export default {
                 donghuas(sort:"totalPopularity:desc")  {
                   id,
                   titles,
-                  image{url},
+                  imageUrl,
                   status{id},
                   tags{id},
                   genres{id},
@@ -183,7 +183,7 @@ export default {
               `)  {
                   id,
                   titles,
-                  image{url},
+                  imageUrl,
                   status{id},
                   tags{id},
                   genres{id},

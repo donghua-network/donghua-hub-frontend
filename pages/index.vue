@@ -54,7 +54,7 @@ export default {
                 donghuas(sort:"totalPopularity:desc", where: { isFeatured: true })  {
                   id,
                   titles,
-                  image{url},
+                  imageUrl,
                   status{name}
                 },
               }`,
@@ -74,7 +74,7 @@ export default {
                 }, sort:"totalPopularity:desc", where: { status: {name: "RELEASING"} })  {
                   id,
                   titles,
-                  image{url},
+                  imageUrl,
                 },
               }`,
     })
@@ -85,7 +85,7 @@ export default {
                 }, sort:"totalPopularity:desc", where: { status: {name: "NOT_YET_RELEASED"}})  {
                   id,
                   titles,
-                  image{url},
+                  imageUrl,
                 },
               }`,
     })
