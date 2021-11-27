@@ -25,6 +25,7 @@
     </div>
     <div class="content-section">
       <h2>Currently Airing</h2>
+      <a href="/browse?status=3">View All</a>
       <div class="card-container">
         <donghua-card
           v-for="donghua in airingDonghuas"
@@ -35,6 +36,7 @@
     </div>
     <div class="content-section">
       <h2>Upcoming Releases</h2>
+      <a href="/browse?status=2">View All</a>
       <div class="card-container">
         <donghua-card
           v-for="donghua in upcomingDonghuas"
@@ -116,6 +118,7 @@ export default {
   text-align: center;
 }
 .card-container {
+  margin-top: 10px;
   display: flex;
   flex-wrap: wrap;
   justify-content: center;

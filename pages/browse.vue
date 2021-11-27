@@ -5,12 +5,16 @@
         <a-row :gutter="5">
           <a-col :md="4">
             <a-form-item label="Search" class="search-form-item">
-              <a-input v-model="filters.query" @change="onSearch" />
+              <a-input v-model="query" @change="resetPage" />
             </a-form-item>
           </a-col>
           <a-col :md="4">
             <a-form-item label="Genre" class="search-form-item">
-              <a-select mode="multiple" @change="genresChanged">
+              <a-select
+                v-model="selectedGenres"
+                mode="multiple"
+                @change="resetPage"
+              >
                 <a-select-option
                   v-for="(genre, id) in genres"
                   :key="id"
@@ -23,7 +27,7 @@
           </a-col>
           <a-col :md="4">
             <a-form-item label="Tag" class="search-form-item">
-              <a-select mode="tags" @change="tagsChanged">
+              <a-select v-model="selectedTags" mode="tags" @change="resetPage">
                 <a-select-option
                   v-for="(tag, id) in tags"
                   :key="id"
@@ -36,7 +40,11 @@
           </a-col>
           <a-col :md="4">
             <a-form-item label="Status" class="search-form-item">
-              <a-select mode="multiple" @change="statusesChanged">
+              <a-select
+                v-model="selectedStatuses"
+                mode="multiple"
+                @change="resetPage"
+              >
                 <a-select-option
                   v-for="(status, id) in statuses"
                   :key="id"
@@ -49,7 +57,11 @@
           </a-col>
           <a-col :md="4">
             <a-form-item label="Format" class="search-form-item">
-              <a-select mode="multiple" @change="formatsChanged">
+              <a-select
+                v-model="selectedFormats"
+                mode="multiple"
+                @change="resetPage"
+              >
                 <a-select-option
                   v-for="(format, id) in formats"
                   :key="id"
@@ -62,7 +74,7 @@
           </a-col>
           <a-col :md="4">
             <a-form-item label="Sort By" class="search-form-item">
-              <a-select default-value="popularity-desc" @change="sortChanged">
+              <a-select v-model="selectedSort">
                 <a-select-option value="popularity-desc"
                   >Most Popular</a-select-option
                 >
@@ -214,27 +226,69 @@ export default {
       statuses,
       formats,
       donghuas: allDonghuas,
-      filters: {
-        genres: new Set(),
-        tags: new Set(),
-        formats: new Set(),
-        statuses: new Set(),
-        query: '',
-      },
-      sort: 'popularity-desc',
       pageNumber: 1,
       pageSize: 50,
     }
   },
 
   computed: {
+    query: {
+      get() {
+        return this.$route.query.q
+      },
+      set(value) {
+        this.updateQueryParams('q', value)
+      },
+    },
+    selectedGenres: {
+      get() {
+        return this.$route.query.genres
+      },
+      set(value) {
+        this.updateQueryParams('genres', value)
+      },
+    },
+    selectedTags: {
+      get() {
+        return this.$route.query.tags
+      },
+      set(value) {
+        this.updateQueryParams('tags', value)
+      },
+    },
+    selectedStatuses: {
+      get() {
+        return this.$route.query.statuses
+      },
+      set(value) {
+        this.updateQueryParams('statuses', value)
+      },
+    },
+    selectedFormats: {
+      get() {
+        return this.$route.query.formats
+      },
+      set(value) {
+        this.updateQueryParams('formats', value)
+      },
+    },
+    selectedSort: {
+      get() {
+        return this.$route.query.sort
+          ? this.$route.query.sort
+          : 'popularity-desc'
+      },
+      set(value) {
+        this.updateQueryParams('sort', value)
+      },
+    },
     displayedDonghuas() {
       return this.donghuas
         .filter((donghua) => {
-          if (this.filters.query !== null && this.filters.query !== '') {
+          if (this.query && this.query !== '') {
             let matchesQuery = false
             for (const title of Object.values(donghua.titles)) {
-              if (title && title.toLowerCase().includes(this.filters.query)) {
+              if (title && title.toLowerCase().includes(this.query)) {
                 matchesQuery = true
                 break
               }
@@ -244,10 +298,10 @@ export default {
             }
           }
 
-          if (this.filters.genres.size > 0) {
+          if (this.selectedGenres && this.selectedGenres.length > 0) {
             let hasGenre = false
             for (const genre of donghua.genres) {
-              if (this.filters.genres.has(genre)) {
+              if (this.selectedGenres.includes('' + genre)) {
                 hasGenre = true
                 break
               }
@@ -257,10 +311,10 @@ export default {
             }
           }
 
-          if (this.filters.tags.size > 0) {
+          if (this.selectedTags && this.selectedTags.length > 0) {
             let hasTag = false
             for (const tag of donghua.tags) {
-              if (this.filters.tags.has(tag)) {
+              if (this.selectedTags.includes('' + tag)) {
                 hasTag = true
                 break
               }
@@ -270,21 +324,27 @@ export default {
             }
           }
 
-          if (this.filters.formats.size > 0) {
-            if (!this.filters.formats.has(donghua.media_type)) {
+          if (this.selectedFormats && this.selectedFormats.length > 0) {
+            if (
+              !donghua.media_type ||
+              !this.selectedFormats.includes('' + donghua.media_type)
+            ) {
               return false
             }
           }
 
-          if (this.filters.statuses.size > 0) {
-            if (!this.filters.statuses.has(donghua.status)) {
+          if (this.selectedStatuses && this.selectedStatuses.length > 0) {
+            if (
+              !donghua.status ||
+              !this.selectedStatuses.includes('' + donghua.status)
+            ) {
               return false
             }
           }
           return true
         })
         .sort((a, b) => {
-          switch (this.sort) {
+          switch (this.selectedSort) {
             case 'popularity-desc':
               return b.totalPopularity - a.totalPopularity
             case 'score-desc':
@@ -294,39 +354,17 @@ export default {
     },
   },
 
-  mounted() {
-    if (this.$route.query.q) {
-      this.filters.query = this.$route.query.q
-    }
-  },
-
   methods: {
-    onSearch() {
+    resetPage() {
       this.pageNumber = 1
     },
 
-    sortChanged(value) {
-      this.sort = value
-    },
-
-    genresChanged(values) {
-      this.filters.genres = new Set(values.map((value) => parseInt(value)))
-      this.pageNumber = 1
-    },
-
-    tagsChanged(values) {
-      this.filters.tags = new Set(values.map((value) => parseInt(value)))
-      this.pageNumber = 1
-    },
-
-    statusesChanged(values) {
-      this.filters.statuses = new Set(values.map((value) => parseInt(value)))
-      this.pageNumber = 1
-    },
-
-    formatsChanged(values) {
-      this.filters.formats = new Set(values.map((value) => parseInt(value)))
-      this.pageNumber = 1
+    updateQueryParams(queryParam, value) {
+      const newQueryParams = { ...this.$route.query }
+      newQueryParams[queryParam] = value
+      this.$router.replace({
+        query: newQueryParams,
+      })
     },
   },
 }
