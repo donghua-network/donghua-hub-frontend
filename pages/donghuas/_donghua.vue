@@ -11,7 +11,7 @@
             <div>{{ donghua.description }}</div>
             <br />
             <div>
-              <b>External Links:</b>
+              <b>External Database Links:</b>
               <a
                 v-if="donghua.externalSiteIds.anilist"
                 :href="
@@ -53,6 +53,29 @@
               </span>
             </div>
             <div>
+              <b>Format: </b
+              ><span>{{
+                donghua.media_type ? donghua.media_type.name : ''
+              }}</span>
+            </div>
+            <div>
+              <b>Episodes: </b><span>{{ donghua.numEpisodes }}</span>
+            </div>
+            <div>
+              <b>Episode Duration: </b
+              ><span>{{ donghua.duration }} minutes</span>
+            </div>
+            <div>
+              <b>Status: </b
+              ><span>{{ donghua.status ? donghua.status.name : '' }}</span>
+            </div>
+            <div>
+              <b>Start Date: </b><span>{{ donghua.startDate }}</span>
+            </div>
+            <div>
+              <b>End Date: </b><span>{{ donghua.endDate }}</span>
+            </div>
+            <div>
               <b>Studios:</b>
               {{ donghua.studios.map((studio) => studio.name).join(', ') }}
             </div>
@@ -61,6 +84,7 @@
               {{
                 Object.values(donghua.titles)
                   .concat(donghua.alternativeTitles)
+                  .filter((title) => title != '')
                   .join(', ')
               }}
             </div>
@@ -156,8 +180,14 @@ export default {
                   streams,
                   externalSiteIds,
                   alternativeTitles,
-                  studios{id,name}
-                  relatedWorks
+                  relatedWorks,
+                  studios{id,name},
+                  status{id,name},
+                  startDate,
+                  endDate,
+                  numEpisodes,
+                  media_type{id,name},
+                  duration
                  },
               }`,
       })
