@@ -25,7 +25,9 @@
     </div>
     <div class="content-section">
       <h2>Currently Airing</h2>
-      <a href="/browse?status=3">View All</a>
+      <NuxtLink :to="{ path: 'browse', query: { status: 3 } }"
+        >View All</NuxtLink
+      >
       <div class="card-container">
         <donghua-card
           v-for="donghua in airingDonghuas"
@@ -36,7 +38,9 @@
     </div>
     <div class="content-section">
       <h2>Upcoming Releases</h2>
-      <a href="/browse?status=2">View All</a>
+      <NuxtLink :to="{ path: 'browse', query: { status: 2 } }"
+        >View All</NuxtLink
+      >
       <div class="card-container">
         <donghua-card
           v-for="donghua in upcomingDonghuas"
