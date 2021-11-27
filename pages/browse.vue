@@ -258,7 +258,7 @@ export default {
     },
     selectedStatuses: {
       get() {
-        return this.$route.query.statuse
+        return this.$route.query.status
       },
       set(value) {
         this.updateQueryParams('status', value)
@@ -366,6 +366,49 @@ export default {
         query: newQueryParams,
       })
     },
+  },
+  head() {
+    const shortDescription = 'Search through hundreds of donghua on DonghuaHub!'
+    return {
+      title: 'Browse Donghua',
+      meta: [
+        {
+          hid: 'description',
+          name: 'description',
+          content: shortDescription,
+        },
+        {
+          hid: 'og-url',
+          property: 'og:url',
+          content: 'https://donghuahub.com/browse',
+        },
+        {
+          hid: 'og-type',
+          property: 'og:type',
+          content: 'website',
+        },
+        {
+          hid: 'og-title',
+          property: 'og:title',
+          content: 'Browse Donghua',
+        },
+        {
+          hid: 'og-description',
+          property: 'og:description',
+          content: shortDescription,
+        },
+        {
+          hid: 'og-image',
+          property: 'og:image',
+          content: 'https://donghuahub.com/logo_large.png',
+        },
+        {
+          hid: 'twitter-card',
+          name: 'twitter:card',
+          content: 'summary_large_image',
+        },
+      ],
+    }
   },
 }
 </script>

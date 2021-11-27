@@ -238,8 +238,48 @@ export default {
     }
   },
   head() {
+    const shortDescription = this.donghua.description
+      ? this.donghua.description.split('.', 2).join('.') + '...'
+      : ''
     return {
       title: this.donghua.titles.romanized,
+      meta: [
+        {
+          hid: 'description',
+          name: 'description',
+          content: shortDescription,
+        },
+        {
+          hid: 'og-url',
+          property: 'og:url',
+          content: 'https://donghuahub.com/donghuas/' + this.donghua.id,
+        },
+        {
+          hid: 'og-type',
+          property: 'og:type',
+          content: 'website',
+        },
+        {
+          hid: 'og-title',
+          property: 'og:title',
+          content: this.donghua.titles.romanized,
+        },
+        {
+          hid: 'og-description',
+          property: 'og:description',
+          content: shortDescription,
+        },
+        {
+          hid: 'og-image',
+          property: 'og:image',
+          content: this.donghua.imageUrl,
+        },
+        {
+          hid: 'twitter-card',
+          name: 'twitter:card',
+          content: 'summary_large_image',
+        },
+      ],
     }
   },
 }

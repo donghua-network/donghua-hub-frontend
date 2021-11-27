@@ -108,6 +108,50 @@ export default {
       ),
     }
   },
+  head() {
+    const shortDescription =
+      'Discover and discuss your favorite donghua on DonghuaHub!'
+    return {
+      title: 'DonghuaHub',
+      meta: [
+        {
+          hid: 'description',
+          name: 'description',
+          content: shortDescription,
+        },
+        {
+          hid: 'og-url',
+          property: 'og:url',
+          content: 'https://donghuahub.com',
+        },
+        {
+          hid: 'og-type',
+          property: 'og:type',
+          content: 'website',
+        },
+        {
+          hid: 'og-title',
+          property: 'og:title',
+          content: 'DonghuaHub',
+        },
+        {
+          hid: 'og-description',
+          property: 'og:description',
+          content: shortDescription,
+        },
+        {
+          hid: 'og-image',
+          property: 'og:image',
+          content: 'https://donghuahub.com/logo_large.png',
+        },
+        {
+          hid: 'twitter-card',
+          name: 'twitter:card',
+          content: 'summary_large_image',
+        },
+      ],
+    }
+  },
 }
 </script>
 
