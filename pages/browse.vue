@@ -242,34 +242,34 @@ export default {
     },
     selectedGenres: {
       get() {
-        return this.$route.query.genres
+        return this.$route.query.genre
       },
       set(value) {
-        this.updateQueryParams('genres', value)
+        this.updateQueryParams('genre', value)
       },
     },
     selectedTags: {
       get() {
-        return this.$route.query.tags
+        return this.$route.query.tag
       },
       set(value) {
-        this.updateQueryParams('tags', value)
+        this.updateQueryParams('tag', value)
       },
     },
     selectedStatuses: {
       get() {
-        return this.$route.query.statuses
+        return this.$route.query.statuse
       },
       set(value) {
-        this.updateQueryParams('statuses', value)
+        this.updateQueryParams('status', value)
       },
     },
     selectedFormats: {
       get() {
-        return this.$route.query.formats
+        return this.$route.query.format
       },
       set(value) {
-        this.updateQueryParams('formats', value)
+        this.updateQueryParams('format', value)
       },
     },
     selectedSort: {
