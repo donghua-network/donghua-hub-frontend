@@ -96,7 +96,16 @@
             </p>
           </div>
         </a-tab-pane>
-        <a-tab-pane key="2" tab="Related Works"></a-tab-pane>
+        <a-tab-pane key="2" tab="Related Works">
+          <div class="related">
+            <div v-for="work in relatedWorks" :key="work">
+              <h3 class="relation-name">
+                {{ work.relationName }}
+              </h3>
+              <donghua-card :donghua="work.relatedDonghua"> </donghua-card>
+            </div>
+          </div>
+        </a-tab-pane>
         <a-tab-pane key="3" tab="Staff">
           <a-table
             :columns="staffTableColumns"
@@ -111,6 +120,7 @@
 </template>
 
 <script>
+import DonghuaCard from '~/components/DonghuaCard.vue'
 const staffTableColumns = [
   {
     title: 'Role',
@@ -124,6 +134,7 @@ const staffTableColumns = [
   },
 ]
 export default {
+  components: { DonghuaCard },
   async asyncData({ $axios, params }) {
     const donghuaId = params.donghua
     const donghua = await $axios
@@ -146,6 +157,7 @@ export default {
                   externalSiteIds,
                   alternativeTitles,
                   studios{id,name}
+                  relatedWorks
                  },
               }`,
       })
@@ -160,8 +172,32 @@ export default {
               }`,
       })
       .then((res) => res.data.data.staffRoles)
+
+    const relatedDonghuaArr = []
+
+    for (const [relatedKey, relatedID] of Object.entries(
+      donghua.relatedWorks
+    )) {
+      const newDonghua = await $axios
+        .post('/graphql', {
+          query: `{
+                 donghua(id:${relatedID}){
+                  id,
+                  titles,
+                  imageUrl,
+                 },
+              }`,
+        })
+        .then((res) => res.data.data.donghua)
+      relatedDonghuaArr.push({
+        relationName: relatedKey,
+        relatedDonghua: newDonghua,
+      })
+    }
+
     return {
       donghua,
+      relatedWorks: relatedDonghuaArr,
       staffTableData,
     }
   },
@@ -189,5 +225,13 @@ export default {
 }
 .page-image {
   width: 100%;
+}
+.related {
+  display: flex;
+  padding: 5px;
+  flex-flow: row wrap;
+}
+.relation-name {
+  text-align: center;
 }
 </style>
