@@ -117,7 +117,7 @@ export default {
           .then((res) => res.data.data.donghuas)
         while (donghuas.length < numDonghuas) {
           donghuas = donghuas.concat(
-            await $axios
+            await axios
               .post('/graphql', {
                 query:
                   `{
