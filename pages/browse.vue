@@ -354,9 +354,13 @@ export default {
             case 'score-desc':
               return b.aggregateScore - a.aggregateScore
             case 'startDate-desc':
-              if (a.startDate && b.startDate) {
+              if (a.status === 2 && b.status !== 2) {
+                return -1
+              } else if (b.status === 2 && a.status !== 2) {
+                return 1
+              } else if (a.startDate && b.startDate) {
                 return new Date(b.startDate) - new Date(a.startDate)
-              } else if (a.startDate || (a.status && a.status === 2)) {
+              } else if (a.startDate) {
                 return -1
               } else {
                 return 1

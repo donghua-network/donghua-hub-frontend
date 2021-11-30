@@ -109,8 +109,7 @@ export default {
     }
   },
   head() {
-    const shortDescription =
-      'Discover and discuss your favorite donghua on DonghuaHub!'
+    const shortDescription = 'Discover your favorite donghua on DonghuaHub!'
     return {
       title: 'DonghuaHub',
       meta: [
