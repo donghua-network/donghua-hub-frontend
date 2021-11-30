@@ -81,6 +81,8 @@
                 <a-select-option value="score-desc"
                   >Highest Score</a-select-option
                 >
+                <a-select-option value="startDate-desc">Newest</a-select-option>
+                <a-select-option value="startDate-asc">Oldest</a-select-option>
               </a-select>
             </a-form-item>
           </a-col>
@@ -179,7 +181,8 @@ export default {
                   genres{id},
                   media_type{id},
                   totalPopularity,
-                  aggregateScore
+                  aggregateScore,
+                  startDate
                 },
               }`,
       })
@@ -201,7 +204,8 @@ export default {
                   genres{id},
                   media_type{id},
                   totalPopularity,
-                  aggregateScore
+                  aggregateScore,
+                  startDate
                 },
               }`,
           })
@@ -349,6 +353,22 @@ export default {
               return b.totalPopularity - a.totalPopularity
             case 'score-desc':
               return b.aggregateScore - a.aggregateScore
+            case 'startDate-desc':
+              if (a.startDate && b.startDate) {
+                return new Date(b.startDate) - new Date(a.startDate)
+              } else if (a.startDate) {
+                return 1
+              } else {
+                return -1
+              }
+            case 'startDate-asc':
+              if (a.startDate && b.startDate) {
+                return new Date(a.startDate) - new Date(b.startDate)
+              } else if (a.startDate) {
+                return -1
+              } else {
+                return 1
+              }
           }
         })
     },
