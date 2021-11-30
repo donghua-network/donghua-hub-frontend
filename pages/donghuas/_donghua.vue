@@ -138,7 +138,6 @@
           ></a-table>
         </a-tab-pane>
       </a-tabs>
-      <Disqus />
     </div>
   </div>
 </template>
