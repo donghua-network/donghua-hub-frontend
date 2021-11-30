@@ -356,10 +356,10 @@ export default {
             case 'startDate-desc':
               if (a.startDate && b.startDate) {
                 return new Date(b.startDate) - new Date(a.startDate)
-              } else if (a.startDate) {
-                return 1
-              } else {
+              } else if (a.startDate || (a.status && a.status.id == 2)) {
                 return -1
+              } else {
+                return 1
               }
             case 'startDate-asc':
               if (a.startDate && b.startDate) {
