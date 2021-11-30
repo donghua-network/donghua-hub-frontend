@@ -5,20 +5,37 @@ import { Index } from 'flexsearch'
 
 const dynamicRoutes = async () => {
   axios.defaults.baseURL = process.env.API_SERVER_URL
-  const numDonghuas = await axios.get('/donghuas/count').then((res) => res.data)
-  let donghuas = await axios.get('/donghuas').then((res) => res.data)
-  while (donghuas.length < numDonghuas) {
-    donghuas = donghuas.concat(
-      await axios
-        .get('/donghuas?_start=' + donghuas.length)
-        .then((res) => res.data)
-    )
+  let donghuas = []
+  let results = await axios
+    .post('/graphql', {
+      query: `{
+          donghuas{
+            id
+          }
+        }`,
+    })
+    .then((res) => res.data.data.donghuas)
+  while (true) {
+    donghuas = donghuas.concat(results)
+    if (results.length < 100) {
+      break
+    }
+    results = await axios
+      .post('/graphql', {
+        query:
+          `{
+              donghuas(start:` +
+          donghuas.length +
+          `) {
+                id
+              }
+            }`,
+      })
+      .then((res) => res.data.data.donghuas)
   }
-
   const donghuaRoutes = donghuas.map((donghua) => {
     return {
       route: `/donghuas/${donghua.id}`,
-      payload: donghua,
     }
   })
 
@@ -76,6 +93,7 @@ export default {
   build: {},
 
   generate: {
+    crawler: false,
     routes: dynamicRoutes,
   },
 
@@ -86,12 +104,33 @@ export default {
         const numDonghuas = await axios
           .get('/donghuas/count')
           .then((res) => res.data)
-        let donghuas = await axios.get('/donghuas').then((res) => res.data)
+        let donghuas = await axios
+          .post('/graphql', {
+            query: `{
+          donghuas {
+            id,
+            titles,
+            alternativeTitles
+          }
+        }`,
+          })
+          .then((res) => res.data.data.donghuas)
         while (donghuas.length < numDonghuas) {
           donghuas = donghuas.concat(
-            await axios
-              .get('/donghuas?_start=' + donghuas.length)
-              .then((res) => res.data)
+            await $axios
+              .post('/graphql', {
+                query:
+                  `{
+              donghuas(start:` +
+                  donghuas.length +
+                  `) {
+                id,
+                titles,
+                alternativeTitles
+              }
+            }`,
+              })
+              .then((res) => res.data.data.donghuas)
           )
         }
         const indexEn = new Index()
