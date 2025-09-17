@@ -15,7 +15,7 @@
     "ant-design-vue": "^1.6.5",
     "core-js": "^3.6.5",
     "flexsearch": "^0.7.21",
-    "nuxt": "^3.16.0",
+    "nuxt": "^3.19.0",
     "vue-disqus": "^4.0.1"
   },
   "devDependencies": {
